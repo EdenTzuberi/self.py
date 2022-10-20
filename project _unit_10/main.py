@@ -4,49 +4,55 @@ from functions import show_hidden_word
 from functions import choose_word
 from functions import try_update_letter_guessed
 from functions import check_win
-from functions import print_old_letters_guessed
+import random
 
 
 def main():
     HANGMAN_HEADER()
     old_letters_guesses = []
-    errors = 0
+    errors = 1
 
-    file_path = input('Enter file path: ')
-    index = int(input("Enter index: "))
+    # file_path = input('Enter file path: ')
+    file_path = r'C:\Users\edent\OneDrive\שולחן העבודה\words.txt'
+    # index = int(input("Enter index: "))
+    index = random.randint(1, 100)
     secret_word = choose_word(file_path, index)
 
-    print("let's start!")
-    print_hangman(1)
+    print("let's start!" + '\n')
+    print(show_hidden_word(secret_word, old_letters_guesses))
 
-    for i in range(len(secret_word)):
-        print(show_hidden_word(secret_word, old_letters_guesses))
-        print_hangman(errors)
+    for i in range(8):
+        letter = input("insert one letter: ")
 
-        if not check_win(secret_word, old_letters_guesses):
-            letter = input("insert one letter: ")
-            check = try_update_letter_guessed(letter, old_letters_guesses)
-            try_update_letter_guessed(letter, old_letters_guesses)
-            print('\n' + '->'.join(old_letters_guesses))
+        if letter not in secret_word:
+            if try_update_letter_guessed(letter, old_letters_guesses):
+                old_letters_guesses = try_update_letter_guessed(letter, old_letters_guesses)
+            print('->'.join(old_letters_guesses))
+            print(show_hidden_word(secret_word, old_letters_guesses))
+            print(':(')
             print_hangman(errors)
+            errors += 1
 
-            if not check:
-                errors += 1
-                old_letters_guesses.append(letter)
-                print('\n' + '->'.join(old_letters_guesses))
-                print(':(')
+            if errors == 7 or len(old_letters_guesses) == 8:
+                print('->'.join(old_letters_guesses))
                 print_hangman(errors)
+                print('LOSE')
+                print("the secret word: " + "'" + secret_word + "'")
+                break
 
-        if errors == 6:
-            print('\n' + '->'.join(old_letters_guesses))
-            print_hangman(errors)
-            print('LOSE')
-            break
+        if letter in secret_word:
+            if try_update_letter_guessed(letter, old_letters_guesses):
+                old_letters_guesses = try_update_letter_guessed(letter, old_letters_guesses)
+            print(show_hidden_word(secret_word, old_letters_guesses))
+            print('->'.join(old_letters_guesses))
 
-        if check_win(secret_word, old_letters_guesses):
-            print_hangman(errors)
-            print('WIN')
-            break
+            if check_win(secret_word, old_letters_guesses):
+                print('WIN')
+                print('->'.join(old_letters_guesses))
+                print("the secret word: " + "'" + secret_word + "'")
+                break
+
+    print("\n thanks for playing HANGMAN!")
 
 
 if __name__ == "__main__":

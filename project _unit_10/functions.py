@@ -38,8 +38,8 @@ def try_update_letter_guessed(letter_guessed, old_letters_guessed):
     old_letters_guessed = sorted(old_letters_guessed, key=str.lower)
     if check_valid_input(letter_guessed, old_letters_guessed):
         old_letters_guessed.append(letter_guessed)
-        return True  # the letter was added to the list successfully.
-
+        # return True  # the letter was added to the list successfully.
+        return old_letters_guessed
     else:
         print('X')
         for i in range(len(old_letters_guessed)):
